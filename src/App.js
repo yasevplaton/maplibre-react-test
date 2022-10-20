@@ -1,20 +1,22 @@
 import "./App.css";
-import Map, { Layer, Source } from "react-map-gl";
+import Map, { Layer, Popup, Source } from "react-map-gl";
 import maplibregl from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   clusterCountLayer,
   clusterLayer,
   unclusteredPointLayer,
 } from "./clusters";
 import { countoursLayer } from "./vector-tile";
+import { NavigateButton } from "./NavigateButton";
 
 const MAP_TILER_KEY = "hE7PBueqYiS7hKSYUXP9";
 
 function App() {
   const mapRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(true);
 
   const onClick = (event) => {
     const feature = event.features[0];
@@ -49,6 +51,16 @@ function App() {
       interactiveLayerIds={[clusterLayer.id]}
       onClick={onClick}
     >
+      {showPopup && (
+        <Popup
+          longitude={-100}
+          latitude={40}
+          anchor="bottom"
+          onClose={() => setShowPopup(false)}
+        >
+          <div style={{ color: "red", fontWeight: "bold" }}>You are here</div>
+        </Popup>
+      )}
       <Source
         id="earthquakes"
         type="geojson"
@@ -68,6 +80,7 @@ function App() {
       >
         <Layer {...countoursLayer} />
       </Source>
+      <NavigateButton />
     </Map>
   );
 }
