@@ -19,22 +19,26 @@ function App() {
   const [showPopup, setShowPopup] = useState(true);
 
   const onClick = (event) => {
-    const feature = event.features[0];
-    const clusterId = feature.properties.cluster_id;
+    try {
+      const feature = event.features[0];
+      const clusterId = feature.properties.cluster_id;
 
-    const mapboxSource = mapRef.current.getSource("earthquakes");
+      const mapboxSource = mapRef.current.getSource("earthquakes");
 
-    mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
-      if (err) {
-        return;
-      }
+      mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) {
+          return;
+        }
 
-      mapRef.current.easeTo({
-        center: feature.geometry.coordinates,
-        zoom,
-        duration: 500,
+        mapRef.current.easeTo({
+          center: feature.geometry.coordinates,
+          zoom,
+          duration: 500,
+        });
       });
-    });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
